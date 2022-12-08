@@ -8,19 +8,27 @@ class Task extends StatefulWidget {
   final String photo;
   final int difficulty;
 
-  const Task(
+  Task(
       {Key? key,
       required this.title,
       required this.photo,
       required this.difficulty})
       : super(key: key);
 
+  int nivel = 0;
+
   @override
   State<Task> createState() => _TaskState();
 }
 
 class _TaskState extends State<Task> {
-  int nivel = 0;
+
+  bool assetOrNetwork() {
+    if (widget.photo.contains('http')) {
+      return false;
+    }
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,10 +63,15 @@ class _TaskState extends State<Task> {
                       width: 72,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(6),
-                        child: Image.asset(
-                          widget.photo,
-                          fit: BoxFit.cover,
-                        ),
+                        child: assetOrNetwork()
+                            ? Image.asset(
+                                widget.photo,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.network(
+                                widget.photo,
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     ),
                     Column(
@@ -88,8 +101,8 @@ class _TaskState extends State<Task> {
                         child: ElevatedButton(
                           onPressed: () {
                             setState(() {
-                              nivel++;
-                              log('$nivel');
+                              widget.nivel++;
+                              log('${widget.nivel}');
                             });
                           },
                           child: Column(
@@ -120,12 +133,12 @@ class _TaskState extends State<Task> {
                       child: LinearProgressIndicator(
                         color: Colors.white,
                         value: (widget.difficulty > 0)
-                            ? (nivel / widget.difficulty) / 10
+                            ? (widget.nivel / widget.difficulty) / 10
                             : 1,
                       ),
                     ),
                     Text(
-                      'Nível $nivel',
+                      'Nível ${widget.nivel}',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
