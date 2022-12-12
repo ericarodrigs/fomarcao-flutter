@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:formacao_flutter/components/difficulty_widget.dart';
+import 'package:formacao_flutter/data/task_dao.dart';
 
 class Task extends StatefulWidget {
   final String title;
@@ -22,7 +23,6 @@ class Task extends StatefulWidget {
 }
 
 class _TaskState extends State<Task> {
-
   bool assetOrNetwork() {
     if (widget.photo.contains('http')) {
       return false;
@@ -99,6 +99,30 @@ class _TaskState extends State<Task> {
                       child: Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: ElevatedButton(
+                          onLongPress: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text('Deletar tarefa'),
+                                    content: const Text(
+                                        'Você tem certeza que quer excluir essa tarefa?'),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Cancelar')),
+                                      TextButton(
+                                          onPressed: () {
+                                            TaskDao().delete(widget.title);
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Confirmar')),
+                                    ],
+                                  );
+                                });
+                          },
                           onPressed: () {
                             setState(() {
                               widget.nivel++;

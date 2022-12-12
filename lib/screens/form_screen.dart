@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:formacao_flutter/data/task_inherited.dart';
+import 'package:formacao_flutter/components/task_widget.dart';
+import 'package:formacao_flutter/data/task_dao.dart';
 
 class FormScreen extends StatefulWidget {
   const FormScreen({Key? key, required this.taskContext}) : super(key: key);
@@ -43,8 +44,14 @@ class _FormScreenState extends State<FormScreen> {
         body: Center(
           child: SingleChildScrollView(
             child: Container(
-              height: MediaQuery.of(context).size.height * .85,
-              width: MediaQuery.of(context).size.width * .95,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * .85,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width * .95,
               decoration: BoxDecoration(
                 color: Colors.black12,
                 borderRadius: BorderRadius.circular(10),
@@ -139,13 +146,11 @@ class _FormScreenState extends State<FormScreen> {
                     ),
                   ),
                   ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          TaskInherited.of(widget.taskContext).newTask(
-                            nameController.text,
-                            imageController.text,
-                            int.parse(difficultyController.text),
-                          );
+                          await TaskDao().save(Task(title: nameController.text,
+                              photo: imageController.text,
+                              difficulty: int.parse(difficultyController.text)));
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
